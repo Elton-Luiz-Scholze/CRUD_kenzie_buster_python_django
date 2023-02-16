@@ -6,4 +6,4 @@ class IsEmployeePermission(permissions.BasePermission):
         if req.method in permissions.SAFE_METHODS:
             return True
 
-        return req.user.is_authenticated and req.user.is_superuser
+        return req.user.is_authenticated and req.user.is_employee

@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Movie, MovieRating
-import ipdb
 
 
 class MoviesSerializer(serializers.Serializer):
@@ -12,7 +11,7 @@ class MoviesSerializer(serializers.Serializer):
         default=MovieRating.G,
         required=False,
     )
-    synopsis = serializers.DictField(allow_null=True, default=None)
+    synopsis = serializers.CharField(allow_null=True, default=None)
     added_by = serializers.SerializerMethodField()
 
     def get_added_by(self, obj: MovieRating):

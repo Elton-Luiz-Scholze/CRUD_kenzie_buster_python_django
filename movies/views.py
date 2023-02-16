@@ -3,6 +3,7 @@ from rest_framework.views import APIView, Request, Response, status
 from .serializers import MoviesSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .permissions import IsEmployeePermission
+from .models import Movie
 
 
 class MoviesView(APIView):
@@ -17,3 +18,10 @@ class MoviesView(APIView):
         serializer.save(user=req.user)
 
         return Response(serializer.data, status.HTTP_201_CREATED)
+
+    def get(self, req: Request):
+        movies = Movie.objects.all()
+
+        serializer = MoviesSerializer(movies, many=True)
+
+        return Response(serializer.data)
