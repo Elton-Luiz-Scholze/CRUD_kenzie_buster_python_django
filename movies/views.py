@@ -4,6 +4,7 @@ from .serializers import MoviesSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .permissions import IsEmployeePermission
 from .models import Movie
+from django.shortcuts import get_object_or_404
 
 
 class MoviesView(APIView):
@@ -23,5 +24,14 @@ class MoviesView(APIView):
         movies = Movie.objects.all()
 
         serializer = MoviesSerializer(movies, many=True)
+
+        return Response(serializer.data)
+
+
+class SpecificMovieView(APIView):
+    def get(self, req: Request, movie_id):
+        movie = get_object_or_404(Movie, pk=movie_id)
+
+        serializer = MoviesSerializer(movie)
 
         return Response(serializer.data)
