@@ -29,9 +29,19 @@ class MoviesView(APIView):
 
 
 class SpecificMovieView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsEmployeePermission]
+
     def get(self, req: Request, movie_id):
         movie = get_object_or_404(Movie, pk=movie_id)
 
         serializer = MoviesSerializer(movie)
 
         return Response(serializer.data)
+
+    def delete(self, req: Request, movie_id):
+        movie = get_object_or_404(Movie, pk=movie_id)
+
+        movie.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
