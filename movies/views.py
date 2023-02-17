@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from rest_framework.views import APIView, Request, Response, status
-from .serializers import MoviesSerializer
+from .serializers import MoviesSerializer, MovieOrderSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .permissions import IsEmployeePermission
 from .models import Movie
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 
 
 class MoviesView(APIView):
@@ -45,3 +46,19 @@ class SpecificMovieView(APIView):
         movie.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class MovieOrderView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, req: Request, movie_id):
+        movie = get_object_or_404(Movie, pk=movie_id)
+
+        serializer = MovieOrderSerializer(data=req.data)
+
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save(movie=movie, user_movie=req.user)
+
+        return Response(serializer.data, status.HTTP_201_CREATED)
