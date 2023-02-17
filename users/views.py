@@ -31,3 +31,16 @@ class SpecificUserView(APIView):
         serializer = UserSerializer(user)
 
         return Response(serializer.data)
+
+    def patch(self, req: Request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+
+        self.check_object_permissions(req, user)
+
+        serializer = UserSerializer(user, req.data, partial=True)
+
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+
+        return Response(serializer.data, status.HTTP_200_OK)
