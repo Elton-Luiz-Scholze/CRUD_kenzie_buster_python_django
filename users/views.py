@@ -21,7 +21,7 @@ class UserView(APIView):
 
 class SpecificUserView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsEmployeePermission, IsUserPermission, IsAuthenticated]
+    permission_classes = [IsUserPermission, IsAuthenticated]
 
     def get(self, req: Request, user_id):
         user = get_object_or_404(User, pk=user_id)
