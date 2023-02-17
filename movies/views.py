@@ -6,9 +6,10 @@ from .permissions import IsEmployeePermission
 from .models import Movie
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 
 
-class MoviesView(APIView):
+class MoviesView(APIView, PageNumberPagination):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsEmployeePermission]
 
@@ -24,9 +25,11 @@ class MoviesView(APIView):
     def get(self, req: Request):
         movies = Movie.objects.all()
 
-        serializer = MoviesSerializer(movies, many=True)
+        page = self.paginate_queryset(movies, req)
 
-        return Response(serializer.data)
+        serializer = MoviesSerializer(page, many=True)
+
+        return self.get_paginated_response(serializer.data)
 
 
 class SpecificMovieView(APIView):
